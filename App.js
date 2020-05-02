@@ -1,19 +1,45 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { Navbar } from './src/components/Navbar';
+import { MainScreen } from './src/screens/MainScreen';
+import { TodoScreen } from './src/screens/TodoScreen';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+    const [todoId, setTodoId] = useState(null);
+    const [todos, setTodos] = useState([]);
+    const addTodo = (title) => {
+        setTodos((prev) => [
+            ...prev,
+            {
+                id: Date.now().toString(),
+                title,
+            },
+        ]);
+    };
+
+    const removeTodo = (id) => {
+        setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    };
+
+    let content = (
+        <MainScreen todos={todos} addTodo={addTodo} removeTodo={removeTodo} />
+    );
+
+    if (todoId) {
+        content = <TodoScreen />;
+    }
+
+    return (
+        <View>
+            <Navbar />
+            <View style={styles.container}>{content}</View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+    },
 });
